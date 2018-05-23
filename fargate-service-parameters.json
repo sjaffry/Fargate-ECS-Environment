@@ -1,0 +1,34 @@
+[
+  {
+    "ParameterKey": "StackName",
+    "ParameterValue": "FargateClusterNetworking"
+  }, 
+  {
+    "ParameterKey": "ServiceName",
+    "ParameterValue": "octank-service"
+  }, 
+  {
+    "ParameterKey": "ContainerPort",
+    "ParameterValue": 80
+  },
+  {
+    "ParameterKey": "ContainerCpu",
+    "ParameterValue": 512
+  },
+  {
+    "ParameterKey": "ContainerMemory",
+    "ParameterValue": 1024
+  },
+  {
+    "ParameterKey": "Path",
+    "ParameterValue": "/api/values"
+  },  
+  {
+    "ParameterKey": "Priority",
+    "ParameterValue": 1
+  },
+  {
+    "ParameterKey": "DesiredCount",
+    "ParameterValue": 3
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "ParameterKey": "StackName",
+    "ParameterValue": "FargateNetworking"
+  }, 
+  {
+    "ParameterKey": "ALBName",
+    "ParameterValue": "Fargate-ALB"
+  },
+  {
+    "ParameterKey": "ClusterName",
+    "ParameterValue": "Fargate-Cluster"
+  }  
+]

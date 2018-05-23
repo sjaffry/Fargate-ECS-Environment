@@ -1,0 +1,77 @@
+Description: >
+  Create Application Load Balancer resources for Blue/Green Deployment on ECS. For further reference, please review BluegreenRepo ==> https://github.com/awslabs/ecs-blue-green-deployment
+
+Parameters:
+
+  StackName:
+    Type: String
+
+  ALBName:
+    Type: String
+
+  ClusterName:
+    Type: String
+
+Resources:
+  ALBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Sub ${AWS::StackName}-alb
+      SecurityGroupIngress:
+        - CidrIp: "0.0.0.0/0"
+          IpProtocol: "TCP"
+          FromPort: 80
+          ToPort: 80
+        - CidrIp: "0.0.0.0/0"
+          IpProtocol: "TCP"
+          FromPort: 8080
+          ToPort: 8080
+      VpcId: 
+        Fn::ImportValue:
+          !Join [':', [!Ref 'StackName', 'VpcId']]
+
+  FargateECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Ref ClusterName
+
+  FargateSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Sub ${AWS::StackName}-fargate
+      SecurityGroupIngress:
+        - SourceSecurityGroupId: !Ref ALBSecurityGroup
+          IpProtocol: "TCP"
+          FromPort: 80
+          ToPort: 80
+      VpcId: 
+        Fn::ImportValue:
+          !Join [':', [!Ref 'StackName', 'VpcId']]
+
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: !Ref ALBName
+      Scheme: internet-facing
+      Type: application
+      Subnets:
+        - Fn::ImportValue:
+            !Join [':', [!Ref 'StackName', 'PublicSubnet1']]
+        - Fn::ImportValue:
+            !Join [':', [!Ref 'StackName', 'PublicSubnet2']]
+      SecurityGroups:
+        - !Ref ALBSecurityGroup
+      Tags:
+        - Key: Name
+          Value: !Ref ALBName
+        
+Outputs:
+  ServiceUrl:
+    Description: URL of the load balancer for the sample service.
+    Value: !Sub http://${LoadBalancer.DNSName}
+
+  SecurityGroup:
+    Value: !Ref ALBSecurityGroup
+
+  LoadBalancerArn:
+    Value: !Ref LoadBalancer
