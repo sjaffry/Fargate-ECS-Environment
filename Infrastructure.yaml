@@ -64,14 +64,60 @@ Resources:
       Tags:
         - Key: Name
           Value: !Ref ALBName
-        
+
+
+  # This is a role which is used by the ECS tasks themselves.
+  ECSTaskExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: [ecs-tasks.amazonaws.com]
+          Action: ['sts:AssumeRole']
+      Path: /
+      Policies:
+        - PolicyName: AmazonECSTaskExecutionRolePolicy
+          PolicyDocument:
+            Statement:
+            - Effect: Allow
+              Action:
+                # Allow the ECS Tasks to download images from ECR
+                - 'ecr:GetAuthorizationToken'
+                - 'ecr:BatchCheckLayerAvailability'
+                - 'ecr:GetDownloadUrlForLayer'
+                - 'ecr:BatchGetImage'
+
+                # Allow the ECS tasks to upload logs to CloudWatch
+                - 'logs:CreateLogStream'
+                - 'logs:PutLogEvents'
+              Resource: '*'        
 Outputs:
   ServiceUrl:
     Description: URL of the load balancer for the sample service.
     Value: !Sub http://${LoadBalancer.DNSName}
 
-  SecurityGroup:
-    Value: !Ref ALBSecurityGroup
+  FargateECSCluster:
+    Description: Name of the Fargate cluster
+    Value: !Ref 'FargateECSCluster'
+    Export:
+      Name: !Join [ ':', [ !Ref 'AWS::StackName', 'FargateECSCluster' ] ]
 
-  LoadBalancerArn:
+  FargateSecurityGroup:
+    Description: The Security group for the Fargate cluster
+    Value: !Ref 'FargateSecurityGroup'
+    Export:
+      Name: !Join [ ':', [ !Ref 'AWS::StackName', 'FargateSecurityGroup' ] ]
+
+  LoadBalancer:
+    Description: The ARN of the Load Balancer
     Value: !Ref LoadBalancer
+    Export:
+      Name: !Join [ ':', [ !Ref 'AWS::StackName', 'LoadBalancer' ] ]
+
+  ECSTaskExecutionRole:
+    Description: The ARN of the ECS role
+    Value: !GetAtt 'ECSTaskExecutionRole.Arn'
+    Export:
+      Name: !Join [ ':', [ !Ref 'AWS::StackName', 'ECSTaskExecutionRole' ] ]

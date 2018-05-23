@@ -1,10 +1,15 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Deploy a service on AWS Fargate, hosted in a private subnet, but accessible via a public load balancer.
 Parameters:
-  StackName:
+  NetworkingStackName:
     Type: String
     Default: production
-    Description: The name of the parent Fargate networking stack that you created. Necessary
+    Description: The name of the parent Fargate networking stack. Necessary
+                 to locate and reference resources created by that stack.
+  InfrastructureStackName:
+    Type: String
+    Default: production
+    Description: The name of the parent Fargate infrastructure stack. Necessary
                  to locate and reference resources created by that stack.
   ServiceName:
     Type: String
@@ -12,7 +17,6 @@ Parameters:
     Description: A name for the service
   ImageUrl:
     Type: String
-    Default: nginx
     Description: The url of a docker image that contains the application process that
                  will handle the traffic for this service
   ContainerPort:
@@ -41,7 +45,7 @@ Parameters:
                  assigned to different paths on the load balancer.
   DesiredCount:
     Type: Number
-    Default: 2
+    Default: 3
     Description: How many copies of the service task to run
   Role:
     Type: String
@@ -67,7 +71,7 @@ Resources:
         - FARGATE
       ExecutionRoleArn:
         Fn::ImportValue:
-          !Join [':', [!Ref 'StackName', 'ECSTaskExecutionRole']]
+          !Join [':', [!Ref 'InfrastructureStackName', 'ECSTaskExecutionRole']]
       TaskRoleArn:
         Fn::If:
           - 'HasCustomRole'
@@ -91,23 +95,23 @@ Resources:
       ServiceName: !Ref 'ServiceName'
       Cluster:
         Fn::ImportValue:
-          !Join [':', [!Ref 'StackName', 'ClusterName']]
+          !Join [':', [!Ref 'InfrastructureStackName', 'FargateECSCluster']]
       LaunchType: FARGATE
       DeploymentConfiguration:
         MaximumPercent: 200
-        MinimumHealthyPercent: 75
+        MinimumHealthyPercent: 50
       DesiredCount: !Ref 'DesiredCount'
       NetworkConfiguration:
         AwsvpcConfiguration:
           AssignPublicIp: DISABLED
           SecurityGroups:
             - Fn::ImportValue:
-                !Join [':', [!Ref 'StackName', 'FargateContainerSecurityGroup']]
+                !Join [':', [!Ref 'InfrastructureStackName', 'FargateSecurityGroup']]
           Subnets:
             - Fn::ImportValue:
-                !Join [':', [!Ref 'StackName', 'PrivateSubnetOne']]
+                !Join [':', [!Ref 'NetworkingStackName', 'PrivateSubnet1']]
             - Fn::ImportValue:
-                !Join [':', [!Ref 'StackName', 'PrivateSubnetTwo']]
+                !Join [':', [!Ref 'NetworkingStackName', 'PrivateSubnet2']]
       TaskDefinition: !Ref 'TaskDefinition'
       LoadBalancers:
         - ContainerName: !Ref 'ServiceName'
@@ -123,7 +127,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       HealthCheckIntervalSeconds: 6
-      HealthCheckPath: /
+      HealthCheckPath: /api/values
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2
@@ -134,7 +138,20 @@ Resources:
       UnhealthyThresholdCount: 2
       VpcId:
         Fn::ImportValue:
-          !Join [':', [!Ref 'StackName', 'VPCId']]
+          !Join [':', [!Ref 'NetworkingStackName', 'VpcId']]
+
+  # Create a listener for the ALB that will forward requests to the target group
+  LoadBalancerListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - TargetGroupArn: !Ref 'TargetGroup'
+          Type: 'forward'
+      LoadBalancerArn:
+        Fn::ImportValue:
+          !Join [':', [!Ref 'InfrastructureStackName', 'LoadBalancer']]      
+      Port: 80
+      Protocol: HTTP
 
   # Create a rule on the load balancer for routing traffic to the target group
   LoadBalancerRule:
@@ -146,7 +163,5 @@ Resources:
       Conditions:
         - Field: path-pattern
           Values: [!Ref 'Path']
-      ListenerArn:
-        Fn::ImportValue:
-          !Join [':', [!Ref 'StackName', 'PublicListener']]
+      ListenerArn: !Ref LoadBalancerListener
       Priority: !Ref 'Priority'
