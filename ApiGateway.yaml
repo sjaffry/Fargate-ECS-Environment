@@ -1,0 +1,67 @@
+Description: >
+  Create API Gateway Rest API for the Fargate ECS Service
+
+Parameters:
+  ApiName:
+    Type: String
+
+  ApiDescription:
+    Type: String
+
+  ApiEndpointType:
+    Type: String
+
+  Path:
+    Type: String
+
+  InfrastructureStackName:
+      Type: String
+
+Resources:
+  OctankAPI:
+    Type: "AWS::ApiGateway::RestApi"
+    Properties:
+      Description: !Ref ApiDescription
+      EndpointConfiguration:
+        Types:
+          - !Ref ApiEndpointType
+      FailOnWarnings: true
+      Name: !Ref ApiName
+
+  ValuesResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref "OctankAPI"
+      ParentId: !GetAtt OctankAPI.RootResourceId
+      PathPart: !Ref Path
+  
+  ValuesResourceMethodGET:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref "OctankAPI"
+      ResourceId: !Ref ValuesResource 
+      HttpMethod: GET      
+      AuthorizationType: NONE
+      Integration:
+        Type: HTTP
+        IntegrationHttpMethod: GET
+        Uri:
+          Fn::ImportValue:
+            !Join [':', [!Ref 'InfrastructureStackName', 'ServiceUrl']]
+        IntegrationResponses:
+            - StatusCode: "200"
+      MethodResponses:
+        - StatusCode: "200"
+
+  Deployment: 
+    DependsOn: "ValuesResourceMethodGET"
+    Type: "AWS::ApiGateway::Deployment"
+    Properties: 
+      RestApiId: !Ref "OctankAPI"
+      Description: "Production Deployment"
+      StageName: "Production"
+
+Outputs:
+  OctankAPI:
+    Description: Name of the API.
+    Value: !Ref OctankAPI

@@ -1,0 +1,30 @@
+[
+  {
+    "ParameterKey": "InfrastructureStackName",
+    "ParameterValue": "FargateInfrastructure"
+  },
+  {
+    "ParameterKey": "NetworkStackName",
+    "ParameterValue": "FargateNetworking"
+  },   
+  {
+    "ParameterKey": "DatabaseUser",
+    "ParameterValue": "octank"
+  }, 
+  {
+    "ParameterKey": "DatabasePassword",
+    "ParameterValue": "Amz123456"
+  },
+  {
+    "ParameterKey": "DatabaseName",
+    "ParameterValue": "OctankDB"
+  },
+  {
+    "ParameterKey": "EncryptionAtRest",
+    "ParameterValue": "true"
+  },      
+  {
+    "ParameterKey": "DatabaseInstanceClass",
+    "ParameterValue": "db.r4.4xlarge"
+  }  
+]

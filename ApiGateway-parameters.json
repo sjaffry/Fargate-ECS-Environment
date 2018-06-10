@@ -1,0 +1,22 @@
+[
+  {
+    "ParameterKey": "ApiName",
+    "ParameterValue": "octankApi"
+  }, 
+  {
+    "ParameterKey": "ApiDescription",
+    "ParameterValue": "API for the octank ECS cluster"
+  },
+  {
+    "ParameterKey": "ApiEndpointType",
+    "ParameterValue": "EDGE"
+  },
+  {
+    "ParameterKey": "Path",
+    "ParameterValue": "api"
+  },      
+  {
+    "ParameterKey": "InfrastructureStackName",
+    "ParameterValue": "FargateInfrastructure"
+  }  
+]

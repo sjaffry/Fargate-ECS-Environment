@@ -71,7 +71,7 @@ Resources:
         - FARGATE
       ExecutionRoleArn:
         Fn::ImportValue:
-          !Join [':', [!Ref 'InfrastructureStackName', 'ECSTaskExecutionRole']]
+          !Join [':', [!Ref 'InfrastructureStackName', 'FargateTaskExecutionRole']]
       TaskRoleArn:
         Fn::If:
           - 'HasCustomRole'

@@ -1,0 +1,184 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Create Aurora DB Cluster for the Octank Service
+
+Parameters:
+
+  NetworkStackName:
+    Description: Name of an active CloudFormation stack that contains networking resources
+    Type: String
+    MinLength: 1
+    MaxLength: 255
+    AllowedPattern: "^[a-zA-Z][-a-zA-Z0-9]*$"
+
+  InfrastructureStackName:
+    Description: Name of an active CloudFormation stack that contains infrastructure resources
+    Type: String
+    MinLength: 1
+    MaxLength: 255
+    AllowedPattern: "^[a-zA-Z][-a-zA-Z0-9]*$"
+
+  DatabaseUser:
+    Type: String
+    Description: Database admin account name
+    MinLength: 5
+    MaxLength: 16
+    AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
+    ConstraintDescription: Name must begin with a letter and contain only alphanumeric characters
+
+  DatabasePassword:
+    NoEcho: true
+    Type: String
+    Description: Database admin account password
+    MinLength: 6
+    MaxLength: 41
+    AllowedPattern: "[a-zA-Z0-9]*"
+    ConstraintDescription: Password must contain only alphanumeric characters
+
+  DatabaseName:
+    Type: String
+    Description: Database name
+    MinLength: 1
+    MaxLength: 30
+    AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
+    ConstraintDescription: Name must begin with a letter and contain only alphanumeric characters
+
+  DatabaseEngine:
+    Default: aurora
+    Type: String
+    Description: Database engines - Aurora MySQL or Aurora PostgreSQL
+    ConstraintDescription: Choose an engine from the drop down
+    AllowedValues:
+      - aurora
+      - aurora-postgresql
+
+  EncryptionAtRest:
+    Default: false
+    Type: String
+    Description: The optional flag for encryption at rest (db.t2.small and above)
+    ConstraintDescription: Only true or false are allowed
+    AllowedValues:
+      - true
+      - false
+
+  DatabaseInstanceClass:
+    Default: db.t2.small
+    Type: String
+    Description: "Database instance class, e.g. db.t2.micro (free tier) - Engine support: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html"
+    ConstraintDescription: DB instance class not supported
+    AllowedValues:
+      - db.t2.small
+      - db.t2.medium
+      - db.t2.xlarge
+      - db.r4.large
+      - db.r4.xlarge
+      - db.r4.2xlarge
+      - db.r4.4xlarge
+      - db.r4.8xlarge
+      - db.r4.16xlarge
+
+Resources:
+
+  DatabaseSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Database subnet group
+      SubnetIds:
+      - Fn::ImportValue: !Join [':', [!Ref 'NetworkStackName', 'SecureSubnet1']]
+      - Fn::ImportValue: !Join [':', [!Ref 'NetworkStackName', 'SecureSubnet2']]
+      Tags:
+      - Key: Name
+        Value: !Ref AWS::StackName
+
+  AuroraCluster:
+    Type: AWS::RDS::DBCluster
+    Properties:
+      Engine: !Ref DatabaseEngine
+      MasterUsername: !Ref DatabaseUser
+      MasterUserPassword: !Ref DatabasePassword
+      DBSubnetGroupName: !Ref DatabaseSubnetGroup
+      StorageEncrypted: !Ref EncryptionAtRest
+      DatabaseName: !Ref DatabaseName
+      DBClusterParameterGroupName: "default.aurora5.6"
+      Port: 3306
+      VpcSecurityGroupIds:
+        - Fn::ImportValue: !Join [':', [!Ref 'InfrastructureStackName', 'DatabaseSecurityGroup']]
+    DependsOn: DatabaseSubnetGroup
+
+  AuroraInstance0:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      Engine: !Ref DatabaseEngine
+      DBClusterIdentifier: !Ref AuroraCluster
+      DBInstanceClass: !Ref DatabaseInstanceClass
+      DBSubnetGroupName: !Ref DatabaseSubnetGroup
+      StorageEncrypted: !Ref EncryptionAtRest
+      DBParameterGroupName: "default.aurora5.6"
+      CopyTagsToSnapshot: true
+      Tags:
+      - Key: Name
+        Value: !Ref AWS::StackName
+    DependsOn: AuroraCluster
+
+  AuroraInstance1:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      Engine: !Ref DatabaseEngine
+      DBClusterIdentifier: !Ref AuroraCluster
+      DBInstanceClass: !Ref DatabaseInstanceClass
+      DBSubnetGroupName: !Ref DatabaseSubnetGroup
+      StorageEncrypted: !Ref EncryptionAtRest
+      DBParameterGroupName: "default.aurora5.6"
+      CopyTagsToSnapshot: true
+      Tags:
+      - Key: Name
+        Value: !Ref AWS::StackName
+    DependsOn: AuroraCluster
+
+  AuroraInstance2:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      Engine: !Ref DatabaseEngine
+      DBClusterIdentifier: !Ref AuroraCluster
+      DBInstanceClass: !Ref DatabaseInstanceClass
+      DBSubnetGroupName: !Ref DatabaseSubnetGroup
+      StorageEncrypted: !Ref EncryptionAtRest
+      DBParameterGroupName: "default.aurora5.6"
+      CopyTagsToSnapshot: true
+      Tags:
+      - Key: Name
+        Value: !Ref AWS::StackName
+    DependsOn: AuroraCluster    
+
+Outputs:
+
+  Name:
+    Description: Aurora Stack Name
+    Value: !Ref AWS::StackName
+    Export:
+      Name: !Sub ${AWS::StackName}-Name
+
+  AuroraClusterId:
+    Description: Aurora Cluster ID
+    Value: !Ref AuroraCluster
+    Export:
+      Name: !Sub ${AWS::StackName}-AuroraClusterID
+
+  AuroraDbURL:
+    Description: Aurora Database URL
+    Value: !GetAtt AuroraCluster.Endpoint.Address
+    Export:
+      Name: !Sub ${AWS::StackName}-DatabaseURL
+
+  AuroraReadDbURL:
+    Description: Aurora Database Read URL
+    Value: !GetAtt AuroraCluster.ReadEndpoint.Address
+    Export:
+      Name: !Sub ${AWS::StackName}-DatabaseReadURL
+
+  DbUser:
+    Description: RDS Database admin account user
+    Value: !Ref DatabaseUser
+    Export:
+      Name: !Sub ${AWS::StackName}-DatabaseUser

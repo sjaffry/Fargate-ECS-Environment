@@ -1,6 +1,6 @@
 [
   {
-    "ParameterKey": "StackName",
+    "ParameterKey": "NetworkStackName",
     "ParameterValue": "FargateNetworking"
   }, 
   {
@@ -10,5 +10,9 @@
   {
     "ParameterKey": "ClusterName",
     "ParameterValue": "Fargate-Cluster"
-  }  
+  },
+  {
+    "ParameterKey": "TaskExecutionRoleName",
+    "ParameterValue": "FargateTaskExecutionRole"
+  }    
 ]
