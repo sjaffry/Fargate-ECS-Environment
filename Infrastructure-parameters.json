@@ -9,7 +9,7 @@
   },
   {
     "ParameterKey": "ClusterName",
-    "ParameterValue": "Fargate-Cluster"
+    "ParameterValue": "Octank-Fargate-Cluster"
   },
   {
     "ParameterKey": "TaskExecutionRoleName",

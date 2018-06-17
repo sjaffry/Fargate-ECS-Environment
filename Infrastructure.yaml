@@ -48,6 +48,10 @@ Resources:
           IpProtocol: "TCP"
           FromPort: 80
           ToPort: 80
+        - SourceSecurityGroupId: !Ref ALBSecurityGroup
+          IpProtocol: "TCP"
+          FromPort: 3000
+          ToPort: 3000          
       VpcId: 
         Fn::ImportValue:
           !Join [':', [!Ref 'NetworkStackName', 'VpcId']]
@@ -115,9 +119,15 @@ Resources:
 Outputs:
   ServiceUrl:
     Description: URL of the load balancer for the sample service.
-    Value: !Sub http://${LoadBalancer.DNSName}/api/values
+    Value: !Sub http://${LoadBalancer.DNSName}
     Export:
       Name: !Join [ ':', [ !Ref 'AWS::StackName', 'ServiceUrl' ] ]
+
+  ProxyUrl:
+    Description: URL for Api Gateway to use for sub resources.
+    Value: !Sub http://${LoadBalancer.DNSName}/{proxy}
+    Export:
+      Name: !Join [ ':', [ !Ref 'AWS::StackName', 'ProxyUrl' ] ]
 
   FargateECSCluster:
     Description: Name of the Fargate cluster

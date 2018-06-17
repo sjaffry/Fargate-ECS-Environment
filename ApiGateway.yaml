@@ -27,19 +27,19 @@ Resources:
           - !Ref ApiEndpointType
       FailOnWarnings: true
       Name: !Ref ApiName
-
-  ValuesResource:
-    Type: AWS::ApiGateway::Resource
-    Properties:
-      RestApiId: !Ref "OctankAPI"
-      ParentId: !GetAtt OctankAPI.RootResourceId
-      PathPart: !Ref Path
   
-  ValuesResourceMethodGET:
+  ProxyResource:
+    Type: 'AWS::ApiGateway::Resource'
+    Properties:
+      ParentId: !GetAtt OctankAPI.RootResourceId
+      RestApiId: !Ref "OctankAPI"
+      PathPart: '{proxy+}'
+
+  RootResourceMethodGET:
     Type: AWS::ApiGateway::Method
     Properties:
       RestApiId: !Ref "OctankAPI"
-      ResourceId: !Ref ValuesResource 
+      ResourceId: !GetAtt OctankAPI.RootResourceId 
       HttpMethod: GET      
       AuthorizationType: NONE
       Integration:
@@ -50,11 +50,32 @@ Resources:
             !Join [':', [!Ref 'InfrastructureStackName', 'ServiceUrl']]
         IntegrationResponses:
             - StatusCode: "200"
+              ResponseParameters: 
+                "method.response.header.Content-Type": "'text/html'"
       MethodResponses:
         - StatusCode: "200"
+          ResponseParameters:
+            "method.response.header.Content-Type": true
+
+  ProxyMethod:
+    Type: 'AWS::ApiGateway::Method'
+    Properties:
+      HttpMethod: ANY
+      ResourceId: !Ref ProxyResource
+      RestApiId: !Ref "OctankAPI"
+      AuthorizationType: NONE
+      Integration:
+        IntegrationHttpMethod: ANY
+        Type: HTTP_PROXY
+        Uri:
+          Fn::ImportValue:
+            !Join [':', [!Ref 'InfrastructureStackName', 'ProxyUrl']]        
+        PassthroughBehavior: WHEN_NO_MATCH
+        IntegrationResponses:
+          - StatusCode: 200
 
   Deployment: 
-    DependsOn: "ValuesResourceMethodGET"
+    DependsOn: "RootResourceMethodGET"
     Type: "AWS::ApiGateway::Deployment"
     Properties: 
       RestApiId: !Ref "OctankAPI"

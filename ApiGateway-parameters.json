@@ -13,7 +13,7 @@
   },
   {
     "ParameterKey": "Path",
-    "ParameterValue": "api"
+    "ParameterValue": "products"
   },      
   {
     "ParameterKey": "InfrastructureStackName",

@@ -9,7 +9,7 @@
   },   
   {
     "ParameterKey": "ImageUrl",
-    "ParameterValue": "946827581022.dkr.ecr.us-east-1.amazonaws.com/octankapi"
+    "ParameterValue": "946827581022.dkr.ecr.us-east-1.amazonaws.com/octank-service"
   },
   {
     "ParameterKey": "ServiceName",
@@ -17,7 +17,7 @@
   }, 
   {
     "ParameterKey": "ContainerPort",
-    "ParameterValue": "80"
+    "ParameterValue": "3000"
   },
   {
     "ParameterKey": "ContainerCpu",
@@ -29,7 +29,7 @@
   },
   {
     "ParameterKey": "Path",
-    "ParameterValue": "/api/values"
+    "ParameterValue": "/"
   },  
   {
     "ParameterKey": "Priority",
