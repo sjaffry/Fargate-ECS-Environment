@@ -95,6 +95,7 @@ Resources:
     Type: AWS::RDS::DBCluster
     Properties:
       Engine: !Ref DatabaseEngine
+      DBClusterIdentifier: "livedemo-auroracluster"
       MasterUsername: !Ref DatabaseUser
       MasterUserPassword: !Ref DatabasePassword
       DBSubnetGroupName: !Ref DatabaseSubnetGroup

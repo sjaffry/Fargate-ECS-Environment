@@ -1,18 +1,18 @@
 [
   {
     "ParameterKey": "NetworkStackName",
-    "ParameterValue": "FargateNetworking"
+    "ParameterValue": "LiveDemoNetworking"
   }, 
   {
     "ParameterKey": "ALBName",
-    "ParameterValue": "Fargate-ALB"
+    "ParameterValue": "LiveDemo-ALB"
   },
   {
     "ParameterKey": "ClusterName",
-    "ParameterValue": "Octank-Fargate-Cluster"
+    "ParameterValue": "LiveDemo-Fargate-Cluster"
   },
   {
     "ParameterKey": "TaskExecutionRoleName",
-    "ParameterValue": "FargateTaskExecutionRole"
+    "ParameterValue": "LiveDemoFargateTaskExecutionRole"
   }    
 ]

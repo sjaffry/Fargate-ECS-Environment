@@ -1,19 +1,19 @@
 [
   {
     "ParameterKey": "NetworkingStackName",
-    "ParameterValue": "FargateNetworking"
+    "ParameterValue": "LiveDemoNetworking"
   }, 
   {
     "ParameterKey": "InfrastructureStackName",
-    "ParameterValue": "FargateInfrastructure"
+    "ParameterValue": "LiveDemoInfrastructure"
   },   
   {
     "ParameterKey": "ImageUrl",
-    "ParameterValue": "946827581022.dkr.ecr.us-east-1.amazonaws.com/octank-service"
+    "ParameterValue": "946827581022.dkr.ecr.us-east-1.amazonaws.com/octank-livedemo"
   },
   {
     "ParameterKey": "ServiceName",
-    "ParameterValue": "octank-service"
+    "ParameterValue": "octank-webapp-service"
   }, 
   {
     "ParameterKey": "ContainerPort",

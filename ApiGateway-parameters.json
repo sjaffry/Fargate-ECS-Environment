@@ -1,7 +1,7 @@
 [
   {
     "ParameterKey": "ApiName",
-    "ParameterValue": "octankApi"
+    "ParameterValue": "LiveDemoApi"
   }, 
   {
     "ParameterKey": "ApiDescription",
@@ -17,6 +17,6 @@
   },      
   {
     "ParameterKey": "InfrastructureStackName",
-    "ParameterValue": "FargateInfrastructure"
+    "ParameterValue": "LiveDemoInfrastructure"
   }  
 ]

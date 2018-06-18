@@ -1,11 +1,11 @@
 [
   {
     "ParameterKey": "InfrastructureStackName",
-    "ParameterValue": "FargateInfrastructure"
+    "ParameterValue": "LiveDemoInfrastructure"
   },
   {
     "ParameterKey": "NetworkStackName",
-    "ParameterValue": "FargateNetworking"
+    "ParameterValue": "LiveDemoNetworking"
   },   
   {
     "ParameterKey": "DatabaseUser",
@@ -17,7 +17,7 @@
   },
   {
     "ParameterKey": "DatabaseName",
-    "ParameterValue": "OctankDB"
+    "ParameterValue": "LiveDemoDB"
   },
   {
     "ParameterKey": "EncryptionAtRest",
