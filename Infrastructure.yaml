@@ -3,7 +3,7 @@ Description: >
 
 Parameters:
 
-  NetworkStackName:
+  StackName:
     Type: String
 
   ALBName:
@@ -31,7 +31,7 @@ Resources:
           ToPort: 8080
       VpcId: 
         Fn::ImportValue:
-          !Join [':', [!Ref 'NetworkStackName', 'VpcId']]
+          !Join [':', [!Ref 'StackName', 'VpcId']]
 
   FargateECSCluster:
     Type: AWS::ECS::Cluster
@@ -54,7 +54,7 @@ Resources:
           ToPort: 3000          
       VpcId: 
         Fn::ImportValue:
-          !Join [':', [!Ref 'NetworkStackName', 'VpcId']]
+          !Join [':', [!Ref 'StackName', 'VpcId']]
 
   DatabaseSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -68,7 +68,7 @@ Resources:
           ToPort: 3306
       VpcId: 
         Fn::ImportValue:
-          !Join [':', [!Ref 'NetworkStackName', 'VpcId']]
+          !Join [':', [!Ref 'StackName', 'VpcId']]
 
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
@@ -78,9 +78,9 @@ Resources:
       Type: application
       Subnets:
         - Fn::ImportValue:
-            !Join [':', [!Ref 'NetworkStackName', 'PublicSubnet1']]
+            !Join [':', [!Ref 'StackName', 'PublicSubnet1']]
         - Fn::ImportValue:
-            !Join [':', [!Ref 'NetworkStackName', 'PublicSubnet2']]
+            !Join [':', [!Ref 'StackName', 'PublicSubnet2']]
       SecurityGroups:
         - !Ref ALBSecurityGroup
       Tags:
@@ -121,40 +121,40 @@ Outputs:
     Description: URL of the load balancer for the sample service.
     Value: !Sub http://${LoadBalancer.DNSName}
     Export:
-      Name: !Join [ ':', [ !Ref 'AWS::StackName', 'ServiceUrl' ] ]
+      Name: !Join [ ':', [ !Ref 'StackName', 'ServiceUrl' ] ]
 
   ProxyUrl:
     Description: URL for Api Gateway to use for sub resources.
     Value: !Sub http://${LoadBalancer.DNSName}/{proxy}
     Export:
-      Name: !Join [ ':', [ !Ref 'AWS::StackName', 'ProxyUrl' ] ]
+      Name: !Join [ ':', [ !Ref 'StackName', 'ProxyUrl' ] ]
 
   FargateECSCluster:
     Description: Name of the Fargate cluster
     Value: !Ref 'FargateECSCluster'
     Export:
-      Name: !Join [ ':', [ !Ref 'AWS::StackName', 'FargateECSCluster' ] ]
+      Name: !Join [ ':', [ !Ref 'StackName', 'FargateECSCluster' ] ]
 
   FargateSecurityGroup:
     Description: The Security group for the Fargate cluster
     Value: !Ref 'FargateSecurityGroup'
     Export:
-      Name: !Join [ ':', [ !Ref 'AWS::StackName', 'FargateSecurityGroup' ] ]
+      Name: !Join [ ':', [ !Ref 'StackName', 'FargateSecurityGroup' ] ]
 
   DatabaseSecurityGroup:
     Description: The Security group for the Aurora Database cluster
     Value: !Ref 'DatabaseSecurityGroup'
     Export:
-      Name: !Join [ ':', [ !Ref 'AWS::StackName', 'DatabaseSecurityGroup' ] ]
+      Name: !Join [ ':', [ !Ref 'StackName', 'DatabaseSecurityGroup' ] ]
 
   LoadBalancer:
     Description: The ARN of the Load Balancer
     Value: !Ref LoadBalancer
     Export:
-      Name: !Join [ ':', [ !Ref 'AWS::StackName', 'LoadBalancer' ] ]
+      Name: !Join [ ':', [ !Ref 'StackName', 'LoadBalancer' ] ]
 
   FargateTaskExecutionRole:
     Description: The ARN of the ECS role
     Value: !Ref TaskExecutionRoleName
     Export:
-      Name: !Join [ ':', [ !Ref 'AWS::StackName', 'FargateTaskExecutionRole' ] ]
+      Name: !Join [ ':', [ !Ref 'StackName', 'FargateTaskExecutionRole' ] ]

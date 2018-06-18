@@ -1,12 +1,8 @@
 [
   {
-    "ParameterKey": "NetworkingStackName",
-    "ParameterValue": "LiveDemoNetworking"
+    "ParameterKey": "StackName",
+    "ParameterValue": "LiveDemoEnvironment"
   }, 
-  {
-    "ParameterKey": "InfrastructureStackName",
-    "ParameterValue": "LiveDemoInfrastructure"
-  },   
   {
     "ParameterKey": "ImageUrl",
     "ParameterValue": "946827581022.dkr.ecr.us-east-1.amazonaws.com/octank-livedemo"

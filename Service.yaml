@@ -1,15 +1,10 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Deploy a service on AWS Fargate, hosted in a private subnet, but accessible via a public load balancer.
 Parameters:
-  NetworkingStackName:
+  StackName:
     Type: String
     Default: production
-    Description: The name of the parent Fargate networking stack. Necessary
-                 to locate and reference resources created by that stack.
-  InfrastructureStackName:
-    Type: String
-    Default: production
-    Description: The name of the parent Fargate infrastructure stack. Necessary
+    Description: The name of the environment stack. Necessary
                  to locate and reference resources created by that stack.
   ServiceName:
     Type: String
@@ -71,7 +66,7 @@ Resources:
         - FARGATE
       ExecutionRoleArn:
         Fn::ImportValue:
-          !Join [':', [!Ref 'InfrastructureStackName', 'FargateTaskExecutionRole']]
+          !Join [':', [!Ref 'StackName', 'FargateTaskExecutionRole']]
       TaskRoleArn:
         Fn::If:
           - 'HasCustomRole'
@@ -95,7 +90,7 @@ Resources:
       ServiceName: !Ref 'ServiceName'
       Cluster:
         Fn::ImportValue:
-          !Join [':', [!Ref 'InfrastructureStackName', 'FargateECSCluster']]
+          !Join [':', [!Ref 'StackName', 'FargateECSCluster']]
       LaunchType: FARGATE
       DeploymentConfiguration:
         MaximumPercent: 200
@@ -106,12 +101,12 @@ Resources:
           AssignPublicIp: DISABLED
           SecurityGroups:
             - Fn::ImportValue:
-                !Join [':', [!Ref 'InfrastructureStackName', 'FargateSecurityGroup']]
+                !Join [':', [!Ref 'StackName', 'FargateSecurityGroup']]
           Subnets:
             - Fn::ImportValue:
-                !Join [':', [!Ref 'NetworkingStackName', 'PrivateSubnet1']]
+                !Join [':', [!Ref 'StackName', 'PrivateSubnet1']]
             - Fn::ImportValue:
-                !Join [':', [!Ref 'NetworkingStackName', 'PrivateSubnet2']]
+                !Join [':', [!Ref 'StackName', 'PrivateSubnet2']]
       TaskDefinition: !Ref 'TaskDefinition'
       LoadBalancers:
         - ContainerName: !Ref 'ServiceName'
@@ -138,7 +133,7 @@ Resources:
       UnhealthyThresholdCount: 2
       VpcId:
         Fn::ImportValue:
-          !Join [':', [!Ref 'NetworkingStackName', 'VpcId']]
+          !Join [':', [!Ref 'StackName', 'VpcId']]
 
   # Create a listener for the ALB that will forward requests to the target group
   LoadBalancerListener:
@@ -149,7 +144,7 @@ Resources:
           Type: 'forward'
       LoadBalancerArn:
         Fn::ImportValue:
-          !Join [':', [!Ref 'InfrastructureStackName', 'LoadBalancer']]      
+          !Join [':', [!Ref 'StackName', 'LoadBalancer']]      
       Port: 80
       Protocol: HTTP
 

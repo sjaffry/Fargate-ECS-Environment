@@ -1,11 +1,7 @@
 [
   {
-    "ParameterKey": "InfrastructureStackName",
-    "ParameterValue": "LiveDemoInfrastructure"
-  },
-  {
-    "ParameterKey": "NetworkStackName",
-    "ParameterValue": "LiveDemoNetworking"
+    "ParameterKey": "StackName",
+    "ParameterValue": "LiveDemoEnvironment"
   },   
   {
     "ParameterKey": "DatabaseUser",

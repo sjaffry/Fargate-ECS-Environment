@@ -14,7 +14,7 @@ Parameters:
   Path:
     Type: String
 
-  InfrastructureStackName:
+  StackName:
       Type: String
 
 Resources:
@@ -47,7 +47,7 @@ Resources:
         IntegrationHttpMethod: GET
         Uri:
           Fn::ImportValue:
-            !Join [':', [!Ref 'InfrastructureStackName', 'ServiceUrl']]
+            !Join [':', [!Ref 'StackName', 'ServiceUrl']]
         IntegrationResponses:
             - StatusCode: "200"
               ResponseParameters: 
@@ -69,7 +69,7 @@ Resources:
         Type: HTTP_PROXY
         Uri:
           Fn::ImportValue:
-            !Join [':', [!Ref 'InfrastructureStackName', 'ProxyUrl']]        
+            !Join [':', [!Ref 'StackName', 'ProxyUrl']]        
         PassthroughBehavior: WHEN_NO_MATCH
         IntegrationResponses:
           - StatusCode: 200

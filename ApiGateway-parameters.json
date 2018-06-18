@@ -16,7 +16,7 @@
     "ParameterValue": "products"
   },      
   {
-    "ParameterKey": "InfrastructureStackName",
-    "ParameterValue": "LiveDemoInfrastructure"
+    "ParameterKey": "StackName",
+    "ParameterValue": "LiveDemoEnvironment"
   }  
 ]

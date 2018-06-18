@@ -1,0 +1,114 @@
+[
+  {
+    "ParameterKey": "EnvironmentName",
+    "ParameterValue": "LIVE-DEMO-VPC"
+  }, 
+  {
+    "ParameterKey": "VpcCIDR",
+    "ParameterValue": "10.192.0.0/16"
+  },
+  {
+    "ParameterKey": "PublicSubnet1CIDR",
+    "ParameterValue": "10.192.10.0/24"
+  },
+  {
+    "ParameterKey": "PublicSubnet2CIDR",
+    "ParameterValue": "10.192.11.0/24"
+  },
+  {
+    "ParameterKey": "PrivateSubnet1CIDR",
+    "ParameterValue": "10.192.20.0/24"
+  },
+  {
+    "ParameterKey": "PrivateSubnet2CIDR",
+    "ParameterValue": "10.192.21.0/24"
+  },
+  {
+    "ParameterKey": "SecureSubnet1CIDR",
+    "ParameterValue": "10.192.30.0/24"
+  },
+  {
+    "ParameterKey": "SecureSubnet2CIDR",
+    "ParameterValue": "10.192.31.0/24"
+  },
+  {
+    "ParameterKey": "ALBName",
+    "ParameterValue": "LiveDemo-ALB"
+  },
+  {
+    "ParameterKey": "ClusterName",
+    "ParameterValue": "LiveDemo-Fargate-Cluster"
+  },
+  {
+    "ParameterKey": "TaskExecutionRoleName",
+    "ParameterValue": "LiveDemoFargateTaskExecutionRole"
+  },
+  {
+    "ParameterKey": "ImageUrl",
+    "ParameterValue": "946827581022.dkr.ecr.us-east-1.amazonaws.com/octank-livedemo"
+  },
+  {
+    "ParameterKey": "ServiceName",
+    "ParameterValue": "octank-webapp-service"
+  }, 
+  {
+    "ParameterKey": "ContainerPort",
+    "ParameterValue": "3000"
+  },
+  {
+    "ParameterKey": "ContainerCpu",
+    "ParameterValue": "512"
+  },
+  {
+    "ParameterKey": "ContainerMemory",
+    "ParameterValue": "1024"
+  },
+  {
+    "ParameterKey": "Path",
+    "ParameterValue": "/"
+  },  
+  {
+    "ParameterKey": "Priority",
+    "ParameterValue": "1"
+  },
+  {
+    "ParameterKey": "DesiredCount",
+    "ParameterValue": "3"
+  },
+  {
+    "ParameterKey": "ApiName",
+    "ParameterValue": "LiveDemoApi"
+  }, 
+  {
+    "ParameterKey": "ApiDescription",
+    "ParameterValue": "API for the octank ECS cluster"
+  },
+  {
+    "ParameterKey": "ApiEndpointType",
+    "ParameterValue": "EDGE"
+  },
+  {
+    "ParameterKey": "Path",
+    "ParameterValue": "products"
+  },      
+  {
+    "ParameterKey": "DatabaseUser",
+    "ParameterValue": "octank"
+  }, 
+  {
+    "ParameterKey": "DatabasePassword",
+    "ParameterValue": "Amz123456"
+  },
+  {
+    "ParameterKey": "DatabaseName",
+    "ParameterValue": "LiveDemoDB"
+  },
+  {
+    "ParameterKey": "EncryptionAtRest",
+    "ParameterValue": "true"
+  },      
+  {
+    "ParameterKey": "DatabaseInstanceClass",
+    "ParameterValue": "db.r4.4xlarge"
+  }  
+]

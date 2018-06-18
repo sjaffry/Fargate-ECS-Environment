@@ -5,15 +5,8 @@ Description: Create Aurora DB Cluster for the Octank Service
 
 Parameters:
 
-  NetworkStackName:
-    Description: Name of an active CloudFormation stack that contains networking resources
-    Type: String
-    MinLength: 1
-    MaxLength: 255
-    AllowedPattern: "^[a-zA-Z][-a-zA-Z0-9]*$"
-
-  InfrastructureStackName:
-    Description: Name of an active CloudFormation stack that contains infrastructure resources
+  StackName:
+    Description: Name of an active CloudFormation stack that contains environment resources
     Type: String
     MinLength: 1
     MaxLength: 255
@@ -85,8 +78,8 @@ Resources:
     Properties:
       DBSubnetGroupDescription: Database subnet group
       SubnetIds:
-      - Fn::ImportValue: !Join [':', [!Ref 'NetworkStackName', 'SecureSubnet1']]
-      - Fn::ImportValue: !Join [':', [!Ref 'NetworkStackName', 'SecureSubnet2']]
+      - Fn::ImportValue: !Join [':', [!Ref 'StackName', 'SecureSubnet1']]
+      - Fn::ImportValue: !Join [':', [!Ref 'StackName', 'SecureSubnet2']]
       Tags:
       - Key: Name
         Value: !Ref AWS::StackName
@@ -104,7 +97,7 @@ Resources:
       DBClusterParameterGroupName: "default.aurora5.6"
       Port: 3306
       VpcSecurityGroupIds:
-        - Fn::ImportValue: !Join [':', [!Ref 'InfrastructureStackName', 'DatabaseSecurityGroup']]
+        - Fn::ImportValue: !Join [':', [!Ref 'StackName', 'DatabaseSecurityGroup']]
     DependsOn: DatabaseSubnetGroup
 
   AuroraInstance0:
@@ -153,33 +146,26 @@ Resources:
     DependsOn: AuroraCluster    
 
 Outputs:
-
-  Name:
-    Description: Aurora Stack Name
-    Value: !Ref AWS::StackName
-    Export:
-      Name: !Sub ${AWS::StackName}-Name
-
   AuroraClusterId:
     Description: Aurora Cluster ID
     Value: !Ref AuroraCluster
     Export:
-      Name: !Sub ${AWS::StackName}-AuroraClusterID
+      Name: !Join [ ':', [ !Ref 'StackName', 'AuroraClusterId' ] ]
 
   AuroraDbURL:
     Description: Aurora Database URL
     Value: !GetAtt AuroraCluster.Endpoint.Address
     Export:
-      Name: !Sub ${AWS::StackName}-DatabaseURL
+      Name: !Join [ ':', [ !Ref 'StackName', 'DatabaseUrl' ] ]      
 
   AuroraReadDbURL:
     Description: Aurora Database Read URL
     Value: !GetAtt AuroraCluster.ReadEndpoint.Address
     Export:
-      Name: !Sub ${AWS::StackName}-DatabaseReadURL
+      Name: !Join [ ':', [ !Ref 'StackName', 'DatabaseReadUrl' ] ]      
 
   DbUser:
     Description: RDS Database admin account user
     Value: !Ref DatabaseUser
     Export:
-      Name: !Sub ${AWS::StackName}-DatabaseUser
+      Name: !Join [ ':', [ !Ref 'StackName', 'DatabaseUser' ] ]      
