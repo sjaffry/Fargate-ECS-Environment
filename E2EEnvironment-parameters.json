@@ -49,7 +49,7 @@
   },
   {
     "ParameterKey": "ServiceName",
-    "ParameterValue": "octank-webapp-service"
+    "ParameterValue": "demo-webapp-service"
   }, 
   {
     "ParameterKey": "ContainerPort",
