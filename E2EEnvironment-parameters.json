@@ -109,6 +109,10 @@
   },      
   {
     "ParameterKey": "DatabaseInstanceClass",
-    "ParameterValue": "db.r4.4xlarge"
-  }  
+    "ParameterValue": "db.r4.4xlarge" 
+  },
+  {
+    "ParameterKey": "Template-bucket-name",
+    "ParameterValue": "fargate-demo-cft"
+  }   
 ]
