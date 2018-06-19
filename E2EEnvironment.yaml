@@ -172,14 +172,14 @@ Parameters:
         - db.r4.8xlarge
         - db.r4.16xlarge
 
-    Template-bucket-name:
+    TemplateBucketName:
         Type: String
 
 Resources:
     Networking:
         Type: AWS::CloudFormation::Stack
         Properties:
-            TemplateURL: !Sub https://s3.amazonaws.com/${Template-bucket-name}/Networking.yaml
+            TemplateURL: !Sub https://s3.amazonaws.com/${TemplateBucketName}/Networking.yaml
             Parameters:
                 EnvironmentName: !Ref EnvironmentName
                 VpcCIDR: !Ref VpcCIDR
@@ -195,7 +195,7 @@ Resources:
         Type: AWS::CloudFormation::Stack
         DependsOn: Networking
         Properties:
-            TemplateURL: !Sub https://s3.amazonaws.com/${Template-bucket-name}/Infrastructure.yaml
+            TemplateURL: !Sub https://s3.amazonaws.com/${TemplateBucketName}/Infrastructure.yaml
             Parameters:
                 TaskExecutionRoleName: !Ref TaskExecutionRoleName
                 ClusterName: !Ref ClusterName
@@ -206,7 +206,7 @@ Resources:
         Type: AWS::CloudFormation::Stack
         DependsOn: Infrastructure
         Properties:
-            TemplateURL: !Sub https://s3.amazonaws.com/${Template-bucket-name}/Service.yaml
+            TemplateURL: !Sub https://s3.amazonaws.com/${TemplateBucketName}/Service.yaml
             Parameters:
                 StackName: !Ref AWS::StackName
                 ImageUrl: !Ref ImageUrl
@@ -222,7 +222,7 @@ Resources:
         Type: AWS::CloudFormation::Stack
         DependsOn: FargateService
         Properties:
-            TemplateURL: !Sub https://s3.amazonaws.com/${Template-bucket-name}/ApiGateway.yaml
+            TemplateURL: !Sub https://s3.amazonaws.com/${TemplateBucketName}/ApiGateway.yaml
             Parameters:
                 ApiName: !Ref ApiName
                 ApiDescription: !Ref ApiDescription
@@ -234,7 +234,7 @@ Resources:
         Type: AWS::CloudFormation::Stack
         DependsOn: Infrastructure
         Properties:
-            TemplateURL: !Sub https://s3.amazonaws.com/${Template-bucket-name}/AuroraDb.yaml
+            TemplateURL: !Sub https://s3.amazonaws.com/${TemplateBucketName}/AuroraDb.yaml
             Parameters:
                 StackName: !Ref AWS::StackName
                 DatabaseUser: !Ref DatabaseUser
